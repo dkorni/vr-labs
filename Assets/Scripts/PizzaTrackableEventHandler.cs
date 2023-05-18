@@ -30,10 +30,13 @@
 
 using Vuforia;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PizzaTrackableEventHandler : MonoBehaviour, ITrackableEventHandler
 {
     #region PROTECTED_MEMBER_VARIABLES
+
+    public UnityEvent OnTrackingLostEvent = new UnityEvent();
 
     protected TrackableBehaviour mTrackableBehaviour;
 
@@ -98,13 +101,23 @@ public class PizzaTrackableEventHandler : MonoBehaviour, ITrackableEventHandler
 
     protected virtual void OnTrackingFound()
     {
-
+        var rendererComponents = GetComponentsInChildren<Renderer>(true);
+        foreach(var component in rendererComponents)
+        {
+            component.enabled = true;
+        }
     }
 
 
     protected virtual void OnTrackingLost()
     {
+        var rendererComponents = GetComponentsInChildren<Renderer>(true);
+        foreach (var component in rendererComponents)
+        {
+            component.enabled = false;
+        }
 
+        OnTrackingLostEvent.Invoke();
     }
 
     #endregion // PROTECTED_METHODS
